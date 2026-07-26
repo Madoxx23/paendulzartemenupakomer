@@ -9,3 +9,5 @@ card.af
 
 # Local tooling config
 .claude/
+
+.vercel

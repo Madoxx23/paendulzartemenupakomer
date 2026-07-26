@@ -3,6 +3,8 @@ const CONFIG = {
   whatsappNumber: "573152630436"
 };
 
+const TOPPING_PRICE = 2000;
+
 // ======= DATOS =======
 const ICE_CREAM_FLAVORS = [
   "Capuchino", "Oreo", "Frutos Rojos", "Maracuyá", "Chocolate",
@@ -191,6 +193,7 @@ const overlay = document.getElementById("overlay");
 const sheets = {
   product: document.getElementById("productSheet"),
   cart: document.getElementById("cartSheet"),
+  toppings: document.getElementById("toppingsSheet"),
   checkout: document.getElementById("checkoutSheet"),
   confirm: document.getElementById("confirmSheet")
 };
@@ -211,6 +214,7 @@ function closeAllSheets() {
 overlay.addEventListener("click", closeAllSheets);
 document.getElementById("closeProductSheet").addEventListener("click", closeAllSheets);
 document.getElementById("closeCartSheet").addEventListener("click", closeAllSheets);
+document.getElementById("closeToppingsSheet").addEventListener("click", returnToCartFromToppings);
 document.getElementById("closeCheckoutSheet").addEventListener("click", closeAllSheets);
 document.getElementById("closeConfirmSheet").addEventListener("click", closeAllSheets);
 
@@ -421,7 +425,8 @@ function addCurrentToCart() {
     img: p.img,
     unitPrice,
     qty: currentSelection.qty,
-    detail: flavorLabel
+    detail: flavorLabel,
+    toppings: []
   });
 
   updateCartUI();
@@ -435,8 +440,14 @@ const cartFab = document.getElementById("cartFab");
 function cartTotalCount() {
   return cart.reduce((sum, item) => sum + item.qty, 0);
 }
+function itemToppingsExtra(item) {
+  return item.toppings.length * TOPPING_PRICE;
+}
+function itemSubtotal(item) {
+  return item.qty * item.unitPrice + itemToppingsExtra(item);
+}
 function cartTotalPrice() {
-  return cart.reduce((sum, item) => sum + item.qty * item.unitPrice, 0);
+  return cart.reduce((sum, item) => sum + itemSubtotal(item), 0);
 }
 
 function updateCartUI() {
@@ -473,13 +484,17 @@ function renderCartItems() {
       <div class="cart-item-info">
         <h4>${item.name}</h4>
         <p>${item.detail || ""}</p>
+        <button type="button" class="cart-item-toppings-btn${item.toppings.length ? " has-toppings" : ""}">
+          🍬 ${item.toppings.length ? `Toppings (${item.toppings.length}) · +${money(itemToppingsExtra(item))}` : "Agregar toppings"}
+        </button>
+        ${item.toppings.length ? `<p class="cart-item-toppings-list">${item.toppings.join(", ")}</p>` : ""}
         <div class="cart-item-controls">
           <div class="cart-item-qty">
             <button type="button" class="cart-minus">−</button>
             <span>${item.qty}</span>
             <button type="button" class="cart-plus">+</button>
           </div>
-          <span class="cart-item-price">${money(item.qty * item.unitPrice)}</span>
+          <span class="cart-item-price">${money(itemSubtotal(item))}</span>
           <button type="button" class="remove-btn">🗑</button>
         </div>
       </div>
@@ -491,6 +506,7 @@ function renderCartItems() {
     el.querySelector(".cart-minus").addEventListener("click", () => changeQty(id, -1));
     el.querySelector(".cart-plus").addEventListener("click", () => changeQty(id, 1));
     el.querySelector(".remove-btn").addEventListener("click", () => removeItem(id));
+    el.querySelector(".cart-item-toppings-btn").addEventListener("click", () => openToppingsSheet(id));
   });
 }
 
@@ -507,6 +523,65 @@ function changeQty(uidVal, delta) {
 function removeItem(uidVal) {
   cart = cart.filter(i => i.uid !== uidVal);
   updateCartUI();
+}
+
+// ======= TOPPINGS DEL CARRITO =======
+let currentToppingCartUid = null;
+
+function openToppingsSheet(cartUid) {
+  currentToppingCartUid = cartUid;
+  renderToppingsSheetBody();
+  openSheet("toppings");
+}
+
+function renderToppingsSheetBody() {
+  const item = cart.find(i => i.uid === currentToppingCartUid);
+  if (!item) return;
+  const body = document.getElementById("toppingsSheetBody");
+
+  body.innerHTML = `
+    <h2 class="sheet-title">Toppings para ${item.name}</h2>
+    <p class="section-sub">Elige los que quieras. Cada topping cuesta ${money(TOPPING_PRICE)} adicionales.</p>
+    <div class="topping-grid" id="toppingsSelectGrid">
+      ${TOPPINGS.map(t => `
+        <div class="topping-select-card${item.toppings.includes(t.name) ? " selected" : ""}" data-topping="${t.name}">
+          <div class="check-badge">✓</div>
+          <div class="topping-img-wrap">
+            ${t.img ? `<img src="${t.img}" alt="${t.name}">` : `<span>${t.emoji}</span>`}
+          </div>
+          <span>${t.name}</span>
+          <span class="topping-price">+${money(TOPPING_PRICE)}</span>
+        </div>
+      `).join("")}
+    </div>
+    <div class="toppings-extra-row">
+      <span>Extra por toppings</span>
+      <strong id="toppingsExtraTotal">${money(itemToppingsExtra(item))}</strong>
+    </div>
+    <button class="btn-primary" id="saveToppingsBtn">Listo</button>
+  `;
+
+  body.querySelectorAll(".topping-select-card").forEach(card => {
+    card.addEventListener("click", () => {
+      const name = card.dataset.topping;
+      const idx = item.toppings.indexOf(name);
+      if (idx === -1) {
+        item.toppings.push(name);
+      } else {
+        item.toppings.splice(idx, 1);
+      }
+      card.classList.toggle("selected", item.toppings.includes(name));
+      document.getElementById("toppingsExtraTotal").textContent = money(itemToppingsExtra(item));
+    });
+  });
+
+  document.getElementById("saveToppingsBtn").addEventListener("click", returnToCartFromToppings);
+}
+
+function returnToCartFromToppings() {
+  currentToppingCartUid = null;
+  updateCartUI();
+  openSheet("cart");
 }
 
 cartFab.addEventListener("click", () => openSheet("cart"));
@@ -545,8 +620,9 @@ function buildWhatsAppMessage({ nombre, telefono, direccion, pago }) {
   lines.push("🍨 *Nuevo pedido — Pa' Endulzarte* 🍨");
   lines.push("");
   cart.forEach(item => {
-    lines.push(`• ${item.qty}x ${item.name} — ${money(item.qty * item.unitPrice)}`);
+    lines.push(`• ${item.qty}x ${item.name} — ${money(itemSubtotal(item))}`);
     if (item.detail) lines.push(`   ${item.detail}`);
+    if (item.toppings.length) lines.push(`   Toppings: ${item.toppings.join(", ")} (+${money(itemToppingsExtra(item))})`);
   });
   lines.push("");
   lines.push(`*Total: ${money(cartTotalPrice())}*`);
