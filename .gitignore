@@ -1,0 +1,11 @@
+node_modules/
+.vercel
+
+# Original source assets (kept locally, not needed for the deployed site — img/ has the copies actually used)
+/*.webp
+ZIP/
+imagenes_optimizadas.zip
+card.af
+
+# Local tooling config
+.claude/

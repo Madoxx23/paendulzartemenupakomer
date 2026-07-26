@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Pa' Endulzarte 🍨</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-icon">🍧</span>
+      <div class="brand-text">
+        <h1>Pa' Endulzarte</h1>
+        <p>Postres, helados y dulces al instante</p>
+      </div>
+    </div>
+  </div>
+  <nav class="category-nav" id="categoryNav">
+    <button class="cat-btn active" data-cat="malteadas">🥤 Malteadas</button>
+    <button class="cat-btn" data-cat="especialidades">🍨 Especialidades</button>
+    <button class="cat-btn" data-cat="frutas">🍓 Frutas</button>
+    <button class="cat-btn" data-cat="toppings">🍬 Toppings</button>
+  </nav>
+</header>
+
+<main id="menu">
+  <section class="category-section" id="cat-malteadas">
+    <h2 class="section-title">🥤 Malteadas</h2>
+    <div class="product-grid" id="grid-malteadas"></div>
+  </section>
+
+  <section class="category-section" id="cat-especialidades">
+    <h2 class="section-title">🍨 Especialidades</h2>
+    <div class="product-grid" id="grid-especialidades"></div>
+  </section>
+
+  <section class="category-section" id="cat-frutas">
+    <h2 class="section-title">🍓 Frutas y Ensaladas</h2>
+    <div class="product-grid" id="grid-frutas"></div>
+  </section>
+
+  <section class="category-section" id="cat-toppings">
+    <h2 class="section-title">🍬 Toppings disponibles</h2>
+    <p class="section-sub">Estos son los toppings que usamos para preparar tus postres.</p>
+    <div class="topping-grid" id="grid-toppings"></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>Pa' Endulzarte © 2026 — Hecho con 🍓 y mucho helado</p>
+</footer>
+
+<!-- Botón flotante del carrito -->
+<button class="cart-fab" id="cartFab">
+  <span class="cart-fab-icon">🛒</span>
+  <span class="cart-fab-info">
+    <span class="cart-fab-count" id="cartCount">0</span>
+    <span class="cart-fab-total" id="cartTotal">$0</span>
+  </span>
+</button>
+
+<!-- Overlay -->
+<div class="overlay" id="overlay"></div>
+
+<!-- Modal de producto -->
+<div class="sheet" id="productSheet">
+  <div class="sheet-handle"></div>
+  <button class="sheet-close" id="closeProductSheet">✕</button>
+  <div class="sheet-body" id="productSheetBody"></div>
+</div>
+
+<!-- Carrito -->
+<div class="sheet" id="cartSheet">
+  <div class="sheet-handle"></div>
+  <button class="sheet-close" id="closeCartSheet">✕</button>
+  <div class="sheet-body">
+    <h2 class="sheet-title">Tu carrito 🛍️</h2>
+    <div id="cartItems" class="cart-items"></div>
+    <div class="cart-summary">
+      <div class="cart-summary-row">
+        <span>Total</span>
+        <strong id="cartSummaryTotal">$0</strong>
+      </div>
+      <button class="btn-primary" id="goToCheckout">Continuar pedido</button>
+    </div>
+  </div>
+</div>
+
+<!-- Checkout -->
+<div class="sheet" id="checkoutSheet">
+  <div class="sheet-handle"></div>
+  <button class="sheet-close" id="closeCheckoutSheet">✕</button>
+  <div class="sheet-body">
+    <h2 class="sheet-title">Datos de entrega 📦</h2>
+    <form id="checkoutForm" class="checkout-form">
+      <label class="field">
+        <span>Nombre completo</span>
+        <input type="text" name="nombre" placeholder="Ej: María Pérez" required>
+      </label>
+      <label class="field">
+        <span>Teléfono</span>
+        <input type="tel" name="telefono" placeholder="Ej: 3001234567" required>
+      </label>
+      <label class="field">
+        <span>Dirección de entrega</span>
+        <input type="text" name="direccion" placeholder="Barrio, calle, referencia" required>
+      </label>
+      <span class="field-label">Método de pago</span>
+      <div class="payment-options">
+        <label class="pay-pill">
+          <input type="radio" name="pago" value="Efectivo" checked>
+          <span>💵 Efectivo</span>
+        </label>
+        <label class="pay-pill">
+          <input type="radio" name="pago" value="Transferencia">
+          <span>📲 Transferencia</span>
+        </label>
+      </div>
+      <button type="submit" class="btn-primary btn-whatsapp">Enviar pedido por WhatsApp</button>
+    </form>
+  </div>
+</div>
+
+<!-- Confirmación -->
+<div class="sheet" id="confirmSheet">
+  <div class="sheet-handle"></div>
+  <button class="sheet-close" id="closeConfirmSheet">✕</button>
+  <div class="sheet-body confirm-body">
+    <div class="confirm-icon">🎉</div>
+    <h2 class="sheet-title">¡Pedido enviado!</h2>
+    <p>Te contactaremos muy pronto para confirmar tu pedido. ¡Gracias por endulzarte con nosotros!</p>
+    <button class="btn-primary" id="newOrderBtn">Hacer otro pedido</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
