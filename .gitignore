@@ -3,6 +3,7 @@ node_modules/
 
 # Original source assets (kept locally, not needed for the deployed site — img/ has the copies actually used)
 /*.webp
+/logo2.png
 ZIP/
 imagenes_optimizadas.zip
 card.af
