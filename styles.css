@@ -448,15 +448,17 @@ main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:10px 16p
 }
 .field input:focus{border-color:var(--pink);}
 .field-label{font-weight:800;font-size:0.85rem;color:var(--purple);}
-.payment-options{display:flex;gap:10px;}
+.payment-options{display:flex;gap:10px;flex-wrap:wrap;}
 .pay-pill{
-  flex:1;
+  flex:1 1 30%;
+  min-width:90px;
   border:2px solid #ecdcf5;
   border-radius:var(--radius-md);
-  padding:12px;
+  padding:12px 8px;
   text-align:center;
   cursor:pointer;
   font-weight:800;
+  font-size:0.9rem;
   transition:all 0.15s ease;
   position:relative;
 }
