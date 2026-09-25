@@ -1,6 +1,6 @@
 // ======= CONFIGURACIÓN =======
 const CONFIG = {
-  whatsappNumber: "573152630436"
+  whatsappNumber: "573161539821"
 };
 
 const TOPPING_PRICE = 2000;
